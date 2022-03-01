@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "857969365323",
+    "project_id": "food-hub-5bc5f",
+    "storage_bucket": "food-hub-5bc5f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:857969365323:android:0589f8fdb1b5e876c598ce",
+        "android_client_info": {
+          "package_name": "com.MostafijurRahman.flutter_food_delivery_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "857969365323-apso16b5pk6s3sm6rktg9q2qev2kel8a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCP4Tku56Dv3YIg2CgjQ9yeETHaj0lfgcQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "857969365323-apso16b5pk6s3sm6rktg9q2qev2kel8a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
