@@ -33,6 +33,45 @@ class _SignInPageState extends State<SignInPage> {
     'assets/images/google.png',
   ];
 
+  Future<void> _signIn() async{
+
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+
+    try {
+       if(email.isEmpty){
+        Get.snackbar('Oops!', 'Email field can\'t be empty',
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white
+        );
+      }
+
+      else if(password.isEmpty){
+        Get.snackbar('Oops!', 'Password field can\'t be empty',
+            backgroundColor: Colors.redAccent,
+            colorText: Colors.white);
+      }
+
+      else if(password.length < 6){
+        Get.snackbar('Oops!', 'Password length should be at least 6',
+            backgroundColor: Colors.redAccent,
+            colorText: Colors.white);
+      }
+
+      else{
+
+         final user = await _auth.signInWithEmailAndPassword(email: email, password: password);
+         if(user != null){
+           Get.offNamed(RouteHelper.getInitial());
+         }
+      }
+    } catch (e) {
+      Get.snackbar('Oops!', 'Incorrect email or password!',
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -103,26 +142,8 @@ class _SignInPageState extends State<SignInPage> {
               height: Dimensions.height30,
             ),
             GestureDetector(
-              onTap: () async{
-                email = emailController.text;
-                password = passwordController.text;
-
-                try {
-                  final user = await _auth.signInWithEmailAndPassword(email: email, password: password);
-                  if(user != null){
-                    Get.offNamed(RouteHelper.getInitial());
-                  }
-                  else{
-                    Get.snackbar('Oops!', 'Incorrect email or password!',
-                    backgroundColor: Colors.redAccent,
-                      colorText: Colors.white
-                    );
-                  }
-                } catch (e) {
-                  Get.snackbar('Oops!', 'Incorrect email or password!',
-                  backgroundColor: Colors.redAccent,
-                      colorText: Colors.white);
-                }
+              onTap: () {
+                _signIn();
               },
               child: Container(
                 width: Dimensions.screenWidth / 2,

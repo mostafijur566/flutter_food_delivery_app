@@ -10,7 +10,7 @@ import '../../utils/app_constants.dart';
 class CartRepo{
   final SharedPreferences sharedPreferences;
   CartRepo({required this.sharedPreferences});
-  
+
   List<String> cart = [];
   List<String> cartHistory = [];
 

@@ -29,10 +29,9 @@ class _AccountPageState extends State<AccountPage> {
   var phone;
   var email;
 
-
-  getData() async{
+  getData() async {
     final user = await _auth.currentUser;
-    if(user != null){
+    if (user != null) {
       userUid = user.uid;
       loggedInUser = user;
       setState(() {
@@ -47,7 +46,6 @@ class _AccountPageState extends State<AccountPage> {
       phone = users[userUid]['phone'];
     });
   }
-
 
   @override
   void initState() {
@@ -81,7 +79,9 @@ class _AccountPageState extends State<AccountPage> {
               size: Dimensions.height15 * 10,
             ),
 
-            SizedBox(height: Dimensions.height30,),
+            SizedBox(
+              height: Dimensions.height30,
+            ),
             Expanded(
               child: SingleChildScrollView(
                 physics: BouncingScrollPhysics(),
@@ -96,8 +96,12 @@ class _AccountPageState extends State<AccountPage> {
                           iconSize: Dimensions.height10 * 5 / 2,
                           size: Dimensions.height10 * 5,
                         ),
-                        bigText: BigText(text: name ?? '...',)),
-                    SizedBox(height: Dimensions.height20,),
+                        bigText: BigText(
+                          text: name ?? '...',
+                        )),
+                    SizedBox(
+                      height: Dimensions.height20,
+                    ),
                     //phone
                     AccountWidget(
                         appIcon: AppIcon(
@@ -107,8 +111,12 @@ class _AccountPageState extends State<AccountPage> {
                           iconSize: Dimensions.height10 * 5 / 2,
                           size: Dimensions.height10 * 5,
                         ),
-                        bigText: BigText(text: phone ?? '...',)),
-                    SizedBox(height: Dimensions.height20,),
+                        bigText: BigText(
+                          text: phone ?? '...',
+                        )),
+                    SizedBox(
+                      height: Dimensions.height20,
+                    ),
                     //email
                     AccountWidget(
                         appIcon: AppIcon(
@@ -118,8 +126,12 @@ class _AccountPageState extends State<AccountPage> {
                           iconSize: Dimensions.height10 * 5 / 2,
                           size: Dimensions.height10 * 5,
                         ),
-                        bigText: BigText(text: email ?? '...',)),
-                    SizedBox(height: Dimensions.height20,),
+                        bigText: BigText(
+                          text: email ?? '...',
+                        )),
+                    SizedBox(
+                      height: Dimensions.height20,
+                    ),
                     //address
                     AccountWidget(
                         appIcon: AppIcon(
@@ -129,8 +141,12 @@ class _AccountPageState extends State<AccountPage> {
                           iconSize: Dimensions.height10 * 5 / 2,
                           size: Dimensions.height10 * 5,
                         ),
-                        bigText: BigText(text: 'Fill in your address',)),
-                    SizedBox(height: Dimensions.height20,),
+                        bigText: BigText(
+                          text: 'Fill in your address',
+                        )),
+                    SizedBox(
+                      height: Dimensions.height20,
+                    ),
                     //message
                     AccountWidget(
                         appIcon: AppIcon(
@@ -140,8 +156,12 @@ class _AccountPageState extends State<AccountPage> {
                           iconSize: Dimensions.height10 * 5 / 2,
                           size: Dimensions.height10 * 5,
                         ),
-                        bigText: BigText(text: 'Message',)),
-                    SizedBox(height: Dimensions.height20,),
+                        bigText: BigText(
+                          text: 'Message',
+                        )),
+                    SizedBox(
+                      height: Dimensions.height20,
+                    ),
                   ],
                 ),
               ),

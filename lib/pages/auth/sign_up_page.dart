@@ -1,4 +1,4 @@
-import 'package:email_validator/email_validator.dart';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -10,7 +10,6 @@ import 'package:get/get.dart';
 import '../../routes/route_helper.dart';
 import '../../widgets/app_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -24,14 +23,6 @@ class _SignUpPageState extends State<SignUpPage> {
   DatabaseReference ref = FirebaseDatabase.instance.ref("users");
   late var userUid;
 
-  String email = '';
-  String password = '';
-  String name = '';
-  String phone = '';
-  late bool isValid;
-
-
-
   @override
   Widget build(BuildContext context) {
     var emailController = TextEditingController();
@@ -44,6 +35,71 @@ class _SignUpPageState extends State<SignUpPage> {
       'assets/images/facebook.png',
       'assets/images/google.png',
     ];
+
+    Future<void> _signUp() async {
+      String name = nameController.text.trim();
+      String phone = phoneController.text.trim();
+      String email = emailController.text.trim();
+      String password = passwordController.text.trim();
+
+      if(name.isEmpty){
+        Get.snackbar('Oops!', 'Name field can\'t be empty',
+            backgroundColor: Colors.redAccent,
+            colorText: Colors.white);
+      }
+
+      else if(phone.isEmpty){
+        Get.snackbar('Oops!', 'Phone field can\'t be empty',
+            backgroundColor: Colors.redAccent,
+            colorText: Colors.white);
+      }
+
+      else if(email.isEmpty){
+        Get.snackbar('Oops!', 'Email field can\'t be empty',
+            backgroundColor: Colors.redAccent,
+            colorText: Colors.white);
+      }
+
+      else if(password.isEmpty){
+        Get.snackbar('Oops!', 'Password field can\'t be empty',
+            backgroundColor: Colors.redAccent,
+            colorText: Colors.white);
+      }
+
+      else if(password.length < 6){
+        Get.snackbar('Oops!', 'Password length should be at least 6',
+            backgroundColor: Colors.redAccent,
+            colorText: Colors.white);
+      }
+
+      else{
+        final newUser =
+            await _auth.createUserWithEmailAndPassword(
+            email: email, password: password);
+        userUid = await _auth.currentUser?.uid;
+
+        if (newUser != null) {
+          await ref.child(userUid).set({
+            "name": name,
+            "phone": phone,
+          });
+
+          setState(() {
+            emailController.clear();
+            passwordController.clear();
+            nameController.clear();
+            phoneController.clear();
+          });
+
+          Get.snackbar('Great!', 'You have successfully created your account!',
+              backgroundColor: AppColors.mainBlackColor,
+              colorText: Colors.white
+          );
+
+          Get.toNamed(RouteHelper.getSignInPage());
+        }
+      }
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -101,54 +157,12 @@ class _SignUpPageState extends State<SignUpPage> {
               height: Dimensions.height30,
             ),
             GestureDetector(
-              onTap: () async {
-                email = emailController.text;
-                password = passwordController.text;
-                name = nameController.text;
-                phone = phoneController.text;
+              onTap: () {
                 try {
-                  isValid = EmailValidator.validate(email);
+                  setState(() {
+                    _signUp();
+                  });
 
-                  if (password != '' && name != '' && phone != '') {
-                    if (isValid) {
-                      final newUser =
-                          await _auth.createUserWithEmailAndPassword(
-                              email: email, password: password);
-                      userUid = await _auth.currentUser?.uid;
-
-                      if (newUser != null) {
-                        print('successful');
-                        print(name);
-                        await ref.child(userUid).set({
-                          "name": name,
-                          "phone": phone,
-                        });
-
-                        setState(() {
-                          emailController.clear();
-                          passwordController.clear();
-                          nameController.clear();
-                          phoneController.clear();
-                        });
-
-                        Get.snackbar('Great!', 'You have successfully created your account!',
-                        backgroundColor: AppColors.mainBlackColor,
-                          colorText: Colors.white
-                        );
-                        
-                        Get.toNamed(RouteHelper.getSignInPage());
-                      }
-                    } else {
-                      Get.snackbar(
-                          'Not valid', 'Please enter a valid email address!',
-                          backgroundColor: Colors.redAccent,
-                          colorText: Colors.white);
-                    }
-                  } else {
-                    Get.snackbar('Can\'t be null', 'All filed are required!',
-                        backgroundColor: Colors.redAccent,
-                        colorText: Colors.white);
-                  }
                 } catch (e) {
                   Get.snackbar(e.toString(), e.toString());
                 }
