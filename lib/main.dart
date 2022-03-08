@@ -4,6 +4,7 @@ import 'package:flutter_food_delivery_app/controllers/cart_controller.dart';
 import 'package:flutter_food_delivery_app/controllers/popular_product_controller.dart';
 import 'package:flutter_food_delivery_app/pages/auth/sign_in_page.dart';
 import 'package:flutter_food_delivery_app/pages/auth/sign_up_page.dart';
+import 'package:flutter_food_delivery_app/pages/home/home_page.dart';
 import 'package:flutter_food_delivery_app/routes/route_helper.dart';
 import 'package:get/get.dart';
 import 'controllers/recommended_product_controller.dart';
@@ -29,9 +30,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Food Hub',
 
-      home: SignInPage(),
-      //initialRoute: RouteHelper.getSplashPage(),
-      getPages: RouteHelper.routes,
+      //home: HomePage(),
+       initialRoute: RouteHelper.getSplashPage(),
+       getPages: RouteHelper.routes,
     );
   }
 }

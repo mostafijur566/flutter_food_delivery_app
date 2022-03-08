@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/cart_model.dart';
@@ -8,7 +10,7 @@ import '../../utils/app_constants.dart';
 class CartRepo{
   final SharedPreferences sharedPreferences;
   CartRepo({required this.sharedPreferences});
-
+  
   List<String> cart = [];
   List<String> cartHistory = [];
 
@@ -70,4 +72,5 @@ class CartRepo{
     cart = [];
     sharedPreferences.remove(AppConstants.CART_LIST);
   }
+
 }

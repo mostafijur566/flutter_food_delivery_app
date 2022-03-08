@@ -11,14 +11,12 @@ class AppTextField extends StatelessWidget {
     required this.hintText,
     required this.icon,
     this.hideText = false,
-    this.errorText
   }) : super(key: key);
 
   final TextEditingController emailController;
   final String hintText;
   final IconData icon;
   final bool hideText;
-  final String? errorText;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +40,6 @@ class AppTextField extends StatelessWidget {
         obscureText: hideText,
         controller: emailController,
         decoration: InputDecoration(
-          errorText: errorText,
           hintText: hintText,
           prefixIcon: Icon(icon,
             color: AppColors.mainColor,

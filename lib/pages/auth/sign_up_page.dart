@@ -1,3 +1,5 @@
+import 'package:email_validator/email_validator.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -5,8 +7,10 @@ import 'package:flutter_food_delivery_app/utils/colors.dart';
 import 'package:flutter_food_delivery_app/utils/dimensions.dart';
 import 'package:flutter_food_delivery_app/widgets/big_text.dart';
 import 'package:get/get.dart';
+import '../../routes/route_helper.dart';
 import '../../widgets/app_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -16,8 +20,17 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-
   final _auth = FirebaseAuth.instance;
+  DatabaseReference ref = FirebaseDatabase.instance.ref("users");
+  late var userUid;
+
+  String email = '';
+  String password = '';
+  String name = '';
+  String phone = '';
+  late bool isValid;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +38,6 @@ class _SignUpPageState extends State<SignUpPage> {
     var passwordController = TextEditingController();
     var nameController = TextEditingController();
     var phoneController = TextEditingController();
-
-    String email;
-    String password;
 
     var signUpIcons = [
       'assets/images/twitter.png',
@@ -91,23 +101,58 @@ class _SignUpPageState extends State<SignUpPage> {
               height: Dimensions.height30,
             ),
             GestureDetector(
-              onTap: () async{
+              onTap: () async {
                 email = emailController.text;
                 password = passwordController.text;
+                name = nameController.text;
+                phone = phoneController.text;
                 try {
-                  final newUser = await _auth.createUserWithEmailAndPassword
-                    (email: email, password: password);
+                  isValid = EmailValidator.validate(email);
 
-                  if(newUser != null)
-                    {
-                      print('Successful');
+                  if (password != '' && name != '' && phone != '') {
+                    if (isValid) {
+                      final newUser =
+                          await _auth.createUserWithEmailAndPassword(
+                              email: email, password: password);
+                      userUid = await _auth.currentUser?.uid;
+
+                      if (newUser != null) {
+                        print('successful');
+                        print(name);
+                        await ref.child(userUid).set({
+                          "name": name,
+                          "phone": phone,
+                        });
+
+                        setState(() {
+                          emailController.clear();
+                          passwordController.clear();
+                          nameController.clear();
+                          phoneController.clear();
+                        });
+
+                        Get.snackbar('Great!', 'You have successfully created your account!',
+                        backgroundColor: AppColors.mainBlackColor,
+                          colorText: Colors.white
+                        );
+                        
+                        Get.toNamed(RouteHelper.getSignInPage());
+                      }
+                    } else {
+                      Get.snackbar(
+                          'Not valid', 'Please enter a valid email address!',
+                          backgroundColor: Colors.redAccent,
+                          colorText: Colors.white);
                     }
-
+                  } else {
+                    Get.snackbar('Can\'t be null', 'All filed are required!',
+                        backgroundColor: Colors.redAccent,
+                        colorText: Colors.white);
+                  }
                 } catch (e) {
-                  print(e);
+                  Get.snackbar(e.toString(), e.toString());
                 }
-
-                },
+              },
               child: Container(
                 width: Dimensions.screenWidth / 2,
                 height: Dimensions.screenHeight / 13,
@@ -126,11 +171,12 @@ class _SignUpPageState extends State<SignUpPage> {
             SizedBox(height: Dimensions.height10),
             RichText(
               text: TextSpan(
-                  recognizer: TapGestureRecognizer()..onTap = () => Get.back(),
-                  text: 'Have an account already?',
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),),
+                recognizer: TapGestureRecognizer()..onTap = () => Get.back(),
+                text: 'Have an account already?',
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
             ),
             SizedBox(height: Dimensions.height20),
             RichText(
@@ -138,18 +184,22 @@ class _SignUpPageState extends State<SignUpPage> {
                 text: 'Or, login with',
                 style: TextStyle(
                   color: Colors.grey,
-                ),),
+                ),
+              ),
             ),
             SizedBox(height: Dimensions.height20),
             Wrap(
-              children: List.generate(3, (index) => Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CircleAvatar(
-                  radius: Dimensions.radius30,
-                  backgroundColor: Colors.white,
-                  backgroundImage: AssetImage(signUpIcons[index]),
+              children: List.generate(
+                3,
+                (index) => Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CircleAvatar(
+                    radius: Dimensions.radius30,
+                    backgroundColor: Colors.white,
+                    backgroundImage: AssetImage(signUpIcons[index]),
+                  ),
                 ),
-              ),),
+              ),
             ),
           ],
         ),

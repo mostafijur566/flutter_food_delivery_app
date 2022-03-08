@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -6,23 +7,35 @@ import 'package:flutter_food_delivery_app/utils/colors.dart';
 import 'package:flutter_food_delivery_app/utils/dimensions.dart';
 import 'package:flutter_food_delivery_app/widgets/big_text.dart';
 import 'package:get/get.dart';
+import '../../routes/route_helper.dart';
 import '../../widgets/app_text_field.dart';
 
-class SignInPage extends StatelessWidget {
+class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    var emailController = TextEditingController();
-    var passwordController = TextEditingController();
-    var nameController = TextEditingController();
-    var phoneController = TextEditingController();
+  State<SignInPage> createState() => _SignInPageState();
+}
 
-    var signUpIcons = [
-      'assets/images/twitter.png',
-      'assets/images/facebook.png',
-      'assets/images/google.png',
-    ];
+class _SignInPageState extends State<SignInPage> {
+
+  final _auth = FirebaseAuth.instance;
+
+  late String email;
+  late String password;
+
+  var emailController = TextEditingController();
+  var passwordController = TextEditingController();
+
+  var signUpIcons = [
+    'assets/images/twitter.png',
+    'assets/images/facebook.png',
+    'assets/images/google.png',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -46,7 +59,7 @@ class SignInPage extends StatelessWidget {
                 ),
               ),
             ),
-            
+
             Container(
               width: double.maxFinite,
               margin: EdgeInsets.only(left: Dimensions.height20),
@@ -89,17 +102,40 @@ class SignInPage extends StatelessWidget {
             SizedBox(
               height: Dimensions.height30,
             ),
-            Container(
-              width: Dimensions.screenWidth / 2,
-              height: Dimensions.screenHeight / 13,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(Dimensions.radius30),
-                  color: AppColors.mainColor),
-              child: Center(
-                child: BigText(
-                  text: 'Sign In',
-                  color: Colors.white,
-                  size: Dimensions.font26,
+            GestureDetector(
+              onTap: () async{
+                email = emailController.text;
+                password = passwordController.text;
+
+                try {
+                  final user = await _auth.signInWithEmailAndPassword(email: email, password: password);
+                  if(user != null){
+                    Get.offNamed(RouteHelper.getInitial());
+                  }
+                  else{
+                    Get.snackbar('Oops!', 'Incorrect email or password!',
+                    backgroundColor: Colors.redAccent,
+                      colorText: Colors.white
+                    );
+                  }
+                } catch (e) {
+                  Get.snackbar('Oops!', 'Incorrect email or password!',
+                  backgroundColor: Colors.redAccent,
+                      colorText: Colors.white);
+                }
+              },
+              child: Container(
+                width: Dimensions.screenWidth / 2,
+                height: Dimensions.screenHeight / 13,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(Dimensions.radius30),
+                    color: AppColors.mainColor),
+                child: Center(
+                  child: BigText(
+                    text: 'Sign In',
+                    color: Colors.white,
+                    size: Dimensions.font26,
+                  ),
                 ),
               ),
             ),

@@ -1,7 +1,7 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_food_delivery_app/pages/account/account_page.dart';
-import 'package:flutter_food_delivery_app/pages/auth/sign_up_page.dart';
 import 'package:flutter_food_delivery_app/pages/cart/cart_history.dart';
 import 'package:flutter_food_delivery_app/pages/home/main_food_page.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -16,6 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
 
   // var _selectedIndex = 0;
 
@@ -84,7 +85,11 @@ class _HomePageState extends State<HomePage> {
   List<Widget> _buildScreens() {
     return [
       const MainFoodPage(),
-      const SignUpPage(),
+      Container(
+        child: Center(
+          child: Text('Empty'),
+        ),
+      ),
       const CartHistory(),
       const AccountPage()
     ];

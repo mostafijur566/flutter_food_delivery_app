@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_food_delivery_app/utils/colors.dart';
@@ -6,8 +10,50 @@ import 'package:flutter_food_delivery_app/widgets/account_widget.dart';
 import 'package:flutter_food_delivery_app/widgets/app_icon.dart';
 import 'package:flutter_food_delivery_app/widgets/big_text.dart';
 
-class AccountPage extends StatelessWidget {
+class AccountPage extends StatefulWidget {
   const AccountPage({Key? key}) : super(key: key);
+
+  @override
+  State<AccountPage> createState() => _AccountPageState();
+}
+
+class _AccountPageState extends State<AccountPage> {
+  final DatabaseReference ref = FirebaseDatabase.instance.ref("users");
+  final _auth = FirebaseAuth.instance;
+
+  var userUid;
+  var loggedInUser;
+
+  var users;
+  var name;
+  var phone;
+  var email;
+
+
+  getData() async{
+    final user = await _auth.currentUser;
+    if(user != null){
+      userUid = user.uid;
+      loggedInUser = user;
+      setState(() {
+        email = loggedInUser.email.toString();
+      });
+    }
+
+    DatabaseEvent event = await ref.once();
+    users = event.snapshot.value;
+    setState(() {
+      name = users[userUid]['name'];
+      phone = users[userUid]['phone'];
+    });
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +96,7 @@ class AccountPage extends StatelessWidget {
                           iconSize: Dimensions.height10 * 5 / 2,
                           size: Dimensions.height10 * 5,
                         ),
-                        bigText: BigText(text: 'Mostafijur Rahman',)),
+                        bigText: BigText(text: name ?? '...',)),
                     SizedBox(height: Dimensions.height20,),
                     //phone
                     AccountWidget(
@@ -61,7 +107,7 @@ class AccountPage extends StatelessWidget {
                           iconSize: Dimensions.height10 * 5 / 2,
                           size: Dimensions.height10 * 5,
                         ),
-                        bigText: BigText(text: '+8801757261840',)),
+                        bigText: BigText(text: phone ?? '...',)),
                     SizedBox(height: Dimensions.height20,),
                     //email
                     AccountWidget(
@@ -72,7 +118,7 @@ class AccountPage extends StatelessWidget {
                           iconSize: Dimensions.height10 * 5 / 2,
                           size: Dimensions.height10 * 5,
                         ),
-                        bigText: BigText(text: 'm.rahman@gmail.com',)),
+                        bigText: BigText(text: email ?? '...',)),
                     SizedBox(height: Dimensions.height20,),
                     //address
                     AccountWidget(
